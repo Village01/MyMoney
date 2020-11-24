@@ -99,13 +99,13 @@ public class ExpenseFragment extends Fragment {
                 .setQuery(mExpenseDatabase, Data.class)
                 .build();
 
-        adapter = new FirebaseRecyclerAdapter<Data, com.example.expensemanager.MyViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
 
-            public com.example.expensemanager.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new com.example.expensemanager.MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.income_recycler_data, parent, false));
+            public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.income_recycler_data, parent, false));
             }
 
-            protected void onBindViewHolder(com.example.expensemanager.MyViewHolder holder, int position, @NonNull Data model) {
+            protected void onBindViewHolder(MyViewHolder holder, int position, @NonNull Data model) {
                 holder.setAmount(model.getAmount());
                 holder.setType(model.getType());
                 holder.setNote(model.getNote());
