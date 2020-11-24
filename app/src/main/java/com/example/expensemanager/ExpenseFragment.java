@@ -102,7 +102,7 @@ public class ExpenseFragment extends Fragment {
         adapter = new FirebaseRecyclerAdapter<Data, MyViewHolder>(options) {
 
             public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.income_recycler_data, parent, false));
+                return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.expense_recycler_data, parent, false));
             }
 
             protected void onBindViewHolder(MyViewHolder holder, int position, @NonNull Data model) {

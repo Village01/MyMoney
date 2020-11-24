@@ -1,9 +1,12 @@
 package com.example.expensemanager;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,7 +38,22 @@ public class IncomeFragment extends Fragment {
     private FirebaseRecyclerAdapter adapter;
 
     //Textview
-    private  TextView incomeTotalSum;
+    private TextView incomeTotalSum;
+
+    //Update edit text..
+    private EditText edtAmount;
+    private EditText edtType;
+    private EditText edtNote;
+
+    //Button for update and delete..
+    private Button btnUpdate;
+    private Button btnDelete;
+
+    //Data item value
+    private String type;
+    private String note;
+    private int amount;
+    private String post_key;
 
     public static IncomeFragment newInstance(String param1, String param2) {
         IncomeFragment fragment = new IncomeFragment();
@@ -75,8 +93,7 @@ public class IncomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int totlatvalue = 0;
 
-                for (DataSnapshot mysanapshot:dataSnapshot.getChildren())
-                {
+                for (DataSnapshot mysanapshot : dataSnapshot.getChildren()) {
                     Data data = mysanapshot.getValue(Data.class);
                     totlatvalue += data.getAmount();
                     String stTotalvalue = String.valueOf(totlatvalue);
@@ -114,12 +131,23 @@ public class IncomeFragment extends Fragment {
                 holder.setType(model.getType());
                 holder.setNote(model.getNote());
                 holder.setDate(model.getDate());
+
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        post_key = getRef(position).getKey();
+
+                        type = model.getType();
+                        note = model.getNote();
+                        amount = model.getAmount();
+
+                        updateDataItem();
+                    }
+                });
             }
         };
         recyclerView.setAdapter(adapter);
     }
-}
-
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -129,6 +157,7 @@ public class IncomeFragment extends Fragment {
             super(itemView);
             mView = itemView;
         }
+
         void setType(String type) {
             TextView mType = mView.findViewById(R.id.type_txt_income);
             mType.setText(type);
@@ -149,5 +178,48 @@ public class IncomeFragment extends Fragment {
             String stamount = String.valueOf(amount);
             mAmount.setText(stamount);
         }
+    }
 
+    private void updateDataItem()
+    {
+        AlertDialog.Builder mydialog = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+        View myview = inflater.inflate(R.layout.update_data_item,null);
+        mydialog.setView(myview);
+
+        edtAmount = myview.findViewById(R.id.amount_edit);
+        edtType = myview.findViewById(R.id.type_edit);
+        edtNote = myview.findViewById(R.id.note_edit);
+
+        //Set data to edit text..
+        edtType.setText(type);
+        edtType.setSelection(type.length());
+
+        edtNote.setText(note);
+        edtNote.setSelection(note.length());
+
+        edtAmount.setText(String.valueOf(amount));
+        edtAmount.setSelection(String.valueOf(amount).length());
+
+        btnUpdate = myview.findViewById(R.id.btn_upd_Update);
+        btnDelete = myview.findViewById(R.id.btnuPD_Delete);
+
+        AlertDialog dialog = mydialog.create();
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 }
