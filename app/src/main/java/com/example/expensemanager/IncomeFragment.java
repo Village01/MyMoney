@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +27,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 public class IncomeFragment extends Fragment {
 
@@ -97,9 +101,8 @@ public class IncomeFragment extends Fragment {
                     Data data = mysanapshot.getValue(Data.class);
                     totlatvalue += data.getAmount();
                     String stTotalvalue = String.valueOf(totlatvalue);
-                    incomeTotalSum.setText(stTotalvalue);
+                    incomeTotalSum.setText(stTotalvalue+".00");
                 }
-
             }
 
             @Override
@@ -177,8 +180,9 @@ public class IncomeFragment extends Fragment {
             TextView mAmount = mView.findViewById(R.id.amount_txt_income);
             String stamount = String.valueOf(amount);
             mAmount.setText(stamount);
-        }
+        };
     }
+
 
     private void updateDataItem()
     {
@@ -210,13 +214,25 @@ public class IncomeFragment extends Fragment {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                type = edtType.getText().toString().trim();
+                note = edtNote.getText().toString().trim();
 
+                String mdamount = String.valueOf(amount);
+                mdamount = edtAmount.getText().toString().trim();
+
+                int myAmount = Integer.parseInt(mdamount);
+                String mDate = DateFormat.getDateInstance().format(new Date());
+                Data data = new Data(myAmount, type, note, post_key, mDate);
+
+                mIncomeDatabase.child(post_key).setValue(data);
+                dialog.dismiss();
             }
         });
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mIncomeDatabase.child(post_key).removeValue();
                 dialog.dismiss();
             }
         });
